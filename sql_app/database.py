@@ -2,20 +2,31 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
+from sqlalchemy.ext.automap import automap_base
+
 # With SQL Lite
 # SQLALCHEMY_DATABASE_URL = "sqlite:///./sql_app.db"
-SQLALCHEMY_DATABASE_URL = "postgresql://postgres:admin123@localhost/ash999"
-
-# With SQL Lite
-# engine = create_engine(
-#     SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False }
-# )
-
+# With postgresql
+OLD_CRM_URL = "mysql+mysqlconnector://root:admin123@localhost:3306/crm5_db"
+NEW_CRM_URL = "mysql+mysqlconnector://root:admin123@localhost:3306/new_crm_db_27"
 # With PostgreSQL
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL,
-    pool_pre_ping=True,
+old_engine = create_engine(
+    OLD_CRM_URL
 )
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+old_local = sessionmaker(autocommit=False, autoflush=False, bind=old_engine)
+new_engine = create_engine(
+    NEW_CRM_URL
+)
+new_local = sessionmaker(autocommit=False,  autoflush=False, bind=new_engine)
 
-Base = declarative_base()
+
+BaseOld = declarative_base()
+BaseNew = declarative_base()
+
+local_session = sessionmaker()
+local_session.configure(binds={
+    BaseOld: old_engine,
+    BaseNew: new_engine
+})
+    
+
