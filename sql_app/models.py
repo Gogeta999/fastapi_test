@@ -48,7 +48,23 @@ class NewTAInfo(BaseNew):
     parent_ib = Column(String(36), ForeignKey("sys_users.ib"))  #Superior IB or AM
     parent_type = Column(Integer)  # 1 isAM and 2 is IB 
     ta_type = Column(Integer)  # 1 is Agent TA, 2 is Pure TA
+    email_Plaintext = Column(String(255))
     
+class NewIBInfo(BaseNew):
+    __tablename__ = "ib_base_info"
+    id = Column(String(36), primary_key=True, index=True)
+    email = Column(String(255))
+    email_Plaintext = Column(String(255))
+    name = Column(String(100))
+    mt_name = Column(String(50))
+    ib_type = Column(String(30))
+    ib_level_id = Column(String(36))
+    parent_id = Column(String(36))
+    ta_id = Column(String(36))
+    mt4_account_id = Column(String(36))
+    mt5_account_id = Column(String(36))
+    root_ib_id = Column(String(36))
+
 class NewSYSUser(BaseNew):
     __tablename__ = "sys_users"
     id = Column(String(36), primary_key=True, index=True) #aka parent_ib from TA Info

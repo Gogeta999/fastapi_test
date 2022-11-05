@@ -5,7 +5,6 @@ These Pydantic models define more or less a "schema" (a valid data shape).
 
 So this will help us avoiding confusion while using both.
 """
-from datetime import datetime
 from pydantic import BaseModel
 
 class OldMTAccount(BaseModel):
@@ -89,7 +88,7 @@ class NewTAInfo(BaseModel):
     parent_ib: str | None #Superior IB or AM
     parent_type: int # 1 isAM and 2 is IB
     ta_type: int # 1 is Agent TA, 2 is Pure TA
-    
+    email_Plaintext = str
     
     # ident_code: str | None
     # pwd: str | None
@@ -129,7 +128,24 @@ class NewTAInfo(BaseModel):
     
     class Config:
         orm_mode = True 
-            
+
+class NewIBInfo(BaseModel):
+    id: str #from ta's parent_ib
+    email: str
+    email_Plaintext: str
+    name: str
+    mt_name: str
+    ib_type: str # IB or SubIB
+    ib_level_id: str # ib in ib level id
+    parent_id: str # if this is MIB than this id will be SYS id if not IB id
+    ta_id: str #id from his ta table
+    mt4_account_id: str #rebate for MT4
+    mt5_account_id: str #rebate for MT5
+    root_ib_id: str #if this id same as own id, than his is mib. if blank than his is 无归属IB
+    
+    class Config:
+        orm_mode = True 
+ 
 class NewSYSUser(BaseModel):
     id: str #aka parent_ib from TA Info
     login_name:str #most am using Email and login
