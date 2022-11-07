@@ -4,10 +4,10 @@
 
 
 # def get_old_acc(db:Session, login: int):
-#     return db.query(models.OldMTAccount).filter(models.OldMTAccount.login == login).first()
+#     return db.query(models.OldMT5Account).filter(models.OldMT5Account.login == login).first()
 
 # def get_old_users(db: Session):
-#     return db.query(models.OldUser).all()
+#     return db.query(models.Old5User).all()
 
 # def get_user(db: Session, user_id: int):
 #     return db.query(models.User).filter(models.User.id == user_id).first()

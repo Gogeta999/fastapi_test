@@ -7,7 +7,27 @@ So this will help us avoiding confusion while using both.
 """
 from pydantic import BaseModel
 
-class OldMTAccount(BaseModel):
+class OldMT4Account(BaseModel):
+    login: int | None
+    user_id: int | None
+    login_type: str | None
+    # commit_group_id: int | None
+    
+    class Config:
+        orm_mode = True 
+ 
+class Old4User(BaseModel):
+    id: int # user id
+    user_name: str
+    parent_id: int #User Parent ID
+    role_id: int #2 is Agent, 3 is DC
+    email: str | None
+
+    class Config:
+        orm_mode = True 
+
+
+class OldMT5Account(BaseModel):
     login: int | None
     user_id: int | None
     login_type: str | None
@@ -18,7 +38,7 @@ class OldMTAccount(BaseModel):
     class Config:
         orm_mode = True 
  
-class OldUser(BaseModel):
+class Old5User(BaseModel):
     id: int # user id
     user_name: str
     parent_id: int #User Parent ID

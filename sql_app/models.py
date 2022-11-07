@@ -1,9 +1,9 @@
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Text, DateTime
 from sqlalchemy.orm import relationship
 
-from .database import BaseOld, BaseNew
+from .database import BaseOld5, BaseNew, BaseOld4
 
-class OldMTAccount(BaseOld):
+class OldMT4Account(BaseOld4):
     __tablename__ = "mt_account"
     login = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey('users.id'), nullable=True)
@@ -14,9 +14,30 @@ class OldMTAccount(BaseOld):
     
     
     # owner_id = Column(Integer, ForeignKey("users.id"))
-    # owner = relationship("OldUser", back_populates="accs")
+    # owner = relationship("Old5User", back_populates="accs")
 
-class OldUser(BaseOld):
+class Old4User(BaseOld4):
+    __tablename__ = "users"
+    id = Column(Integer, primary_key=True, index=True)
+    user_name = Column(String(255))
+    parent_id = Column(Integer)
+    role_id = Column(Integer)
+    email = Column(String(255))
+
+class OldMT5Account(BaseOld5):
+    __tablename__ = "mt_account"
+    login = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=True)
+    login_type = Column(String(255))
+    # commit_group_id = Column(Integer)
+    # create_time = Column(DateTime)
+    # update_time = Column(DateTime)
+    
+    
+    # owner_id = Column(Integer, ForeignKey("users.id"))
+    # owner = relationship("Old5User", back_populates="accs")
+
+class Old5User(BaseOld5):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True, index=True)
     user_name = Column(String(255))
@@ -25,7 +46,7 @@ class OldUser(BaseOld):
     email = Column(String(255))
    
     
-    # accs = relationship("OldMTAccount", back_populates="owner")
+    # accs = relationship("OldMT5Account", back_populates="owner")
 
 class NewMTAccount(BaseNew):
     __tablename__ = "mt_accounts"
