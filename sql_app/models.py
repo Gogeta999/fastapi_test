@@ -89,6 +89,7 @@ class NewIBInfo(BaseNew):
 class NewSYSUser(BaseNew):
     __tablename__ = "sys_users"
     id = Column(String(36), primary_key=True, index=True) #aka parent_ib from TA Info
+    email_Plaintext = Column(String(255))
     login_name = Column(String(255))
     real_name = Column(String(50))
     english_name = Column(String(50))

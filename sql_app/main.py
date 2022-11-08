@@ -26,24 +26,97 @@ def get_db():
     finally:
         db.close()
 
-# crm4_check
+# crm4_Rebate_And_Email_check
 @app.get("/crm4")
 def read_crm4_accs(db: Session = Depends(get_db)):
     temp = []
-    for crm4_accs in db.query(OldMT4Account.login, Old4User.email, OldMT4Account.login_type, Old4User.parent_id).join(Old4User).limit(5):
+    i = 0
+    for crm4_accs in db.query(OldMT4Account.login, Old4User.email, OldMT4Account.login_type, Old4User.parent_id).filter(OldMT4Account.user_id == Old4User.id).all():
+        
+        if crm4_accs[2]=='2':
+            acc_type = "Rebate Acc"
+        elif crm4_accs[2]=='1':
+            acc_type = "Trade Acc"
+        else:
+            acc_type = "Something Wrong"
         crm4_parent_id = crm4_accs[3]
-        crm4_parent = db.query(OldMT4Account.login, Old4User.email).filter(Old4User.id == crm4_parent_id).first()
+        crm4_parent = db.query( Old4User.email, OldMT4Account.login,).filter(Old4User.id == crm4_parent_id).join(OldMT4Account).first()
+        
         
         if crm4_parent == None:
-            crm4_parent = ("No Parent MT", "No Parent Email")
+            crm4_parent = ("No Parent MT or SuperAdmin", "No Parent Email")
         
         new_crm = db.query(NewMTAccount.mt_account, NewTAInfo.email_Plaintext, NewTAInfo.parent_ib, NewTAInfo.parent_type).filter(NewMTAccount.mt_account == crm4_accs[0]).join(NewTAInfo).first()
         
-        write_data = (crm4_accs[0], crm4_accs[1], crm4_parent[0], crm4_parent[1],new_crm[0],new_crm[1])
         
+        
+        # if crm4_accs[0] == None:
+        #     crm4_accs[0] = "No Commision"
+        # if crm4_accs[1] == None:
+        #     crm4_accs[1] = "No Email"
+        # if crm4_parent[0] == None:
+        #     crm4_parent[0] = "No Parent Rebate Acc"
+        # if crm4_parent[1] == None:
+        #     crm4_parent[1] = "No Parent Email"
+            
+        if new_crm == None:
+            if crm4_accs[2]=='2':
+                new_crm = ("No Rebate Acc", "No Email", "Parent_IB not Exist", "Parnet_Type not Exist")
+            if crm4_accs[2]=='1':
+                new_crm = ("No Trade Acc", "No Email", "Parent_IB not Exist", "Parnet_Type not Exist")
+                
+        
+        
+        new_crm_parent_id = new_crm[2]
+        new_crm_parent_type = new_crm[3] #1 is AM and 2 is IB
+        
+        # print("Check Type", new_crm_parent_type)
+        if new_crm_parent_type == 2: #For IB
+            new_crm_parent = db.query(NewIBInfo.email_Plaintext).filter(NewIBInfo.id == new_crm_parent_id).first()
+            
+            if new_crm_parent == None:
+                new_crm_parent = ("IB Not Exist")
+            print("IB Parent in New CRM = ", new_crm_parent[0])
+        
+        if new_crm_parent_type == 1:
+            new_crm_parent = db.query(NewSYSUser.email_Plaintext).filter(NewSYSUser.id == new_crm_parent_id).first()
+            
+            if new_crm_parent == None:
+                new_crm_parent = ("AM Not Exist")
+            print("AM Parent in New CRM =", new_crm_parent[0])
+        
+        # TODO: Need to check with contain
+        if crm4_accs[0] == new_crm[0]:
+            dc_email_same = "DC Email Same"
+        elif crm4_accs[0] != new_crm[0]:
+            dc_email_same = "DC Email Not Same"
+        
+        if crm4_parent[1] == new_crm_parent[0]:
+            parent_email_same = "Parent Email Same"
+        elif crm4_parent[1] != new_crm_parent[0]:
+            parent_email_same = "Parent Email Not Same"
+        
+        write_data = ( acc_type, crm4_accs[0], new_crm[0], crm4_accs[1], new_crm[1], crm4_parent[0], crm4_parent[1],
+                      new_crm_parent[0], dc_email_same, parent_email_same
+                      )
+        
+        i = i + 1
+        
+        print(i)
         temp.append(write_data)
-        print(temp)
-    return temp
+        #print(temp)
+    
+    df = pandas.DataFrame(temp, columns=['mt4_acc_type', 'mt4_acc',  'newcrm_acc', 'mt4_mail', 'newcrm_email', 'mt4_parent_acc', 'mt4_parent_email', 'new_crm_parent_email', 'DC Email Flag', 'Parent Email Flag'
+                                         ])
+
+    
+    # df = pandas.DataFrame(temp, columns=['mt4_acc', 'mt4_mail', 'mt4_parent_acc', 'mt4_parent_email', 'newcrm_acc', 'newcrm_email', 'newcrm_parent_acc', 'newcrm_parent_email', 'dcsame_flag', 'parentsame_flag' ])
+    
+    stream = io.StringIO()
+    df.to_csv(stream, index=False)
+    response = StreamingResponse(iter([stream.getvalue()]), media_type="text/csv")
+    response.headers["Content-Disposition"] = "attachment; filename=crm4_Parent_check.csv"
+    return response
 
 # crm5_check
 @app.get("/test")
