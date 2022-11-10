@@ -46,7 +46,7 @@ def read_crm4_accs(db: Session = Depends(get_db)):
         if crm4_parent == None:
             crm4_parent = ("No Parent MT or SuperAdmin", "No Parent Email")
         
-        new_crm = db.query(NewMTAccount.mt_account, NewTAInfo.email_Plaintext, NewTAInfo.parent_ib, NewTAInfo.parent_type).filter(NewMTAccount.mt_account == crm4_accs[0]).join(NewTAInfo).first()
+        new_crm = db.query(NewMTAccount.mt_account, NewTAInfo.email_Plaintext, NewTAInfo.parent_ib, NewTAInfo.parent_type, NewTAInfo.ta_type).filter(NewMTAccount.mt_account == crm4_accs[0]).join(NewTAInfo).first()
         
         
         
@@ -58,55 +58,85 @@ def read_crm4_accs(db: Session = Depends(get_db)):
         #     crm4_parent[0] = "No Parent Rebate Acc"
         # if crm4_parent[1] == None:
         #     crm4_parent[1] = "No Parent Email"
-            
+        
+        
         if new_crm == None:
             if crm4_accs[2]=='2':
-                new_crm = ("No Rebate Acc", "No Email", "Parent_IB not Exist", "Parnet_Type not Exist")
+                new_crm = ("No Rebate Acc", "No Email", "Parent_IB not Exist", "Parnet_Type not Exist", "TA Type")
             if crm4_accs[2]=='1':
-                new_crm = ("No Trade Acc", "No Email", "Parent_IB not Exist", "Parnet_Type not Exist")
+                new_crm = ("No Trade Acc", "No Email", "Parent_IB not Exist", "Parnet_Type not Exist", "TA Type")
+        
+            
+        if new_crm[4] == 1: #1 IS IB's TA Acc
+            new_crm_parent_id = new_crm[2]
+            new_crm_ib = db.query(NewIBInfo.email_Plaintext, NewIBInfo.parent_id).filter(
+                NewIBInfo.id == new_crm_parent_id
+            ).first()
+            
+            
+            new_crm_parent_type = new_crm[3] #1 is AM and 2 is IB
+            
+            # print("Check Type", new_crm_parent_type)
+            if new_crm_parent_type == 2 and new_crm_ib != None: #For IB
+                print("Ash999-Debuggggggg")
+                new_real_parent_id = new_crm_ib[1]
+                print("1--", new_real_parent_id)
+                new_crm_parent = db.query(NewIBInfo.email_Plaintext).filter(NewIBInfo.id == new_real_parent_id).first()
+                print("2--", new_crm_parent)
+                if new_crm_parent == None:
+                    new_crm_parent = ("IB Not Exist", "IB Null")
                 
-        
-        
-        new_crm_parent_id = new_crm[2]
-        new_crm_parent_type = new_crm[3] #1 is AM and 2 is IB
-        
-        # print("Check Type", new_crm_parent_type)
-        if new_crm_parent_type == 2: #For IB
-            new_crm_parent = db.query(NewIBInfo.email_Plaintext).filter(NewIBInfo.id == new_crm_parent_id).first()
+                print("IB Parent in New CRM = ", new_crm_parent[0], ' id ')
             
-            if new_crm_parent == None:
-                new_crm_parent = ("IB Not Exist")
-            print("IB Parent in New CRM = ", new_crm_parent[0])
-        
-        if new_crm_parent_type == 1:
-            new_crm_parent = db.query(NewSYSUser.email_Plaintext).filter(NewSYSUser.id == new_crm_parent_id).first()
+            if new_crm_parent_type == 1 and new_crm_ib != None:
+                new_crm_parent = db.query(NewSYSUser.email_Plaintext).filter(NewSYSUser.id == new_crm_ib).first()
+                
+                if new_crm_parent == None:
+                    new_crm_parent = ("AM Not Exist", "AM Null")
+                print("AM Parent in New CRM =", new_crm_parent[0], ' id ')
+                
+        if new_crm[4] == 2:
+            new_crm_parent_id = new_crm[2]
+            new_crm_parent_type = new_crm[3]
             
-            if new_crm_parent == None:
-                new_crm_parent = ("AM Not Exist")
-            print("AM Parent in New CRM =", new_crm_parent[0])
-        
+            if new_crm_parent_type == 2: #For IB
+                new_crm_parent = db.query(NewIBInfo.email_Plaintext).filter(NewIBInfo.id == new_crm_parent_id).first()
+                
+                if new_crm_parent == None:
+                    new_crm_parent = ("IB Not Exist")
+                
+                print("IB Parent in New CRM = ", new_crm_parent[0], ' id ', new_crm_parent_id)
+            
+            if new_crm_parent_type == 1:
+                new_crm_parent = db.query(NewSYSUser.email_Plaintext).filter(NewSYSUser.id == new_crm_parent_id).first()
+                
+                if new_crm_parent == None:
+                    new_crm_parent = ("AM Not Exist")
+                print("AM Parent in New CRM =", new_crm_parent[0], ' id ', new_crm_parent_id)
+            
         # TODO: Need to check with contain
-        if crm4_accs[0] == new_crm[0]:
+        if crm4_accs[1] == new_crm[1]:
             dc_email_same = "DC Email Same"
-        elif crm4_accs[0] != new_crm[0]:
+        elif crm4_accs[1] != new_crm[1]:
             dc_email_same = "DC Email Not Same"
         
-        if crm4_parent[1] == new_crm_parent[0]:
+        if crm4_parent[0] == new_crm_parent[0]:
             parent_email_same = "Parent Email Same"
-        elif crm4_parent[1] != new_crm_parent[0]:
+        elif crm4_parent[0] != new_crm_parent[0]:
             parent_email_same = "Parent Email Not Same"
         
-        write_data = ( acc_type, crm4_accs[0], new_crm[0], crm4_accs[1], new_crm[1], crm4_parent[0], crm4_parent[1],
+        write_data = ( acc_type, crm4_accs[0], new_crm[0], crm4_accs[1], new_crm[1], crm4_parent[0],
                       new_crm_parent[0], dc_email_same, parent_email_same
                       )
         
         i = i + 1
-        
         print(i)
+        print(write_data)
+        
         temp.append(write_data)
         #print(temp)
     
-    df = pandas.DataFrame(temp, columns=['mt4_acc_type', 'mt4_acc',  'newcrm_acc', 'mt4_mail', 'newcrm_email', 'mt4_parent_acc', 'mt4_parent_email', 'new_crm_parent_email', 'DC Email Flag', 'Parent Email Flag'
+    df = pandas.DataFrame(temp, columns=['mt4_acc_type', 'mt4_acc',  'newcrm_acc', 'mt4_mail', 'newcrm_email',  'mt4_parent_email', 'new_crm_parent_email', 'DC Email Flag', 'Parent Email Flag'
                                          ])
 
     
