@@ -76,24 +76,24 @@ def read_crm4_accs(db: Session = Depends(get_db)):
             
             new_crm_parent_type = new_crm[3] #1 is AM and 2 is IB
             
-            # print("Check Type", new_crm_parent_type)
+            # # print("Check Type", new_crm_parent_type)
             if new_crm_parent_type == 2 and new_crm_ib != None: #For IB
-                print("Ash999-Debuggggggg")
+                # print("Ash999-Debuggggggg")
                 new_real_parent_id = new_crm_ib[1]
-                print("1--", new_real_parent_id)
+                # print("1--", new_real_parent_id)
                 new_crm_parent = db.query(NewIBInfo.email_Plaintext).filter(NewIBInfo.id == new_real_parent_id).first()
-                print("2--", new_crm_parent)
+                # print("2--", new_crm_parent)
                 if new_crm_parent == None:
                     new_crm_parent = ("IB Not Exist", "IB Null")
                 
-                print("IB Parent in New CRM = ", new_crm_parent[0], ' id ')
+                # print("IB Parent in New CRM = ", new_crm_parent[0], ' id ')
             
             if new_crm_parent_type == 1 and new_crm_ib != None:
                 new_crm_parent = db.query(NewSYSUser.email_Plaintext).filter(NewSYSUser.id == new_crm_ib).first()
                 
                 if new_crm_parent == None:
                     new_crm_parent = ("AM Not Exist", "AM Null")
-                print("AM Parent in New CRM =", new_crm_parent[0], ' id ')
+                # print("AM Parent in New CRM =", new_crm_parent[0], ' id ')
                 
         if new_crm[4] == 2:
             new_crm_parent_id = new_crm[2]
@@ -105,14 +105,14 @@ def read_crm4_accs(db: Session = Depends(get_db)):
                 if new_crm_parent == None:
                     new_crm_parent = ("IB Not Exist")
                 
-                print("IB Parent in New CRM = ", new_crm_parent[0], ' id ', new_crm_parent_id)
+                # print("IB Parent in New CRM = ", new_crm_parent[0], ' id ', new_crm_parent_id)
             
             if new_crm_parent_type == 1:
                 new_crm_parent = db.query(NewSYSUser.email_Plaintext).filter(NewSYSUser.id == new_crm_parent_id).first()
                 
                 if new_crm_parent == None:
                     new_crm_parent = ("AM Not Exist")
-                print("AM Parent in New CRM =", new_crm_parent[0], ' id ', new_crm_parent_id)
+                # print("AM Parent in New CRM =", new_crm_parent[0], ' id ', new_crm_parent_id)
             
         # TODO: Need to check with contain
         if crm4_accs[1] == new_crm[1]:
@@ -130,11 +130,11 @@ def read_crm4_accs(db: Session = Depends(get_db)):
                       )
         
         i = i + 1
-        print(i)
-        print(write_data)
+        # print(i)
+        # print(write_data)
         
         temp.append(write_data)
-        #print(temp)
+        ## print(temp)
     
     df = pandas.DataFrame(temp, columns=['mt4_acc_type', 'mt4_acc',  'newcrm_acc', 'mt4_mail', 'newcrm_email',  'mt4_parent_email', 'new_crm_parent_email', 'DC Email Flag', 'Parent Email Flag'
                                          ])
@@ -147,6 +147,17 @@ def read_crm4_accs(db: Session = Depends(get_db)):
     response = StreamingResponse(iter([stream.getvalue()]), media_type="text/csv")
     response.headers["Content-Disposition"] = "attachment; filename=crm4_Parent_check.csv"
     return response
+
+
+@app.get("/mt4orders")
+def get_orders(db: Session = Depends(get_db)):
+    orders = db.query(MT4OpenOrders).all()
+    return orders
+
+@app.get("/mt5orders")
+def get_orders(db: Session = Depends(get_db)):
+    orders = db.query(MT5OpenOrders).all()
+    return orders
 
 # crm5_check
 @app.get("/test")
@@ -193,58 +204,6 @@ def read_old_accs(db: Session = Depends(get_db)):
 
     return response
 
-# @app.get("/decrypt")
-# def decrypt(db: Session = Depends(get_db)):
-#     mt_acc = 88891450
-    
-#     new_crm = db.query(NewMTAccount.mt_account, NewTAInfo.email_Plaintext).filter(NewMTAccount.mt_account==mt_acc).join(NewTAInfo).first()
-#         # print("User ACC", acc[2], "User Email", acc[1], "User Parent Rebate",
-#         #       parent[0], "Parent Email", parent[1])
-#         # new_crm_email = new_crm[1]
-        
-#     if new_crm == None:
-#             new_crm = ("no login", "no email")
-        
-#     key = "8de6febcac222e6a915861d644e5cc31"
-#     new_crm_email = new_crm[1]
-    
-#     new_crm_email = new_crm_email.replace('-','+')
-#     new_crm_email = new_crm_email.replace('_', '/')
-
-#     mod4 = len(new_crm_email) % 4
-        
-#     if mod4:
-#         add_substr = "===="
-#         new_crm_email   = new_crm_email + add_substr[mod4:]
-#     new_crm_email = base64.standard_b64decode(new_crm_email).decode("UTF-8", errors="replace")
-
-#     expire = int(new_crm_email[0:10])
-#     print(expire)
-#     new_crm_email = new_crm_email[10:]
-#     print(new_crm_email)
-#     sec = int(time.time())
-#     print(sec)
-#     if (expire > 0 and expire < sec):
-#         return ''
-#     x = 0
-#     len_1 = len(new_crm_email)
-#     print(len_1)
-#     len_2 = len(key)
-#     char = str = ''
-    
-#     for i in range(len_1):
-#         if x == len_2:
-#             x = 0
-#         char = char + key[x:x+1]
-#         x += 1
-     
-    
-#     for i in range(len_1):
-#         print(ord(new_crm_email[i:i+1]))
-#     #new_crm_email = base64.b64decode(new_crm_email)
-    
-#     # print(new_crm_email)
-#     return 'new_crm_email'
 
 @app.get("/newAccs")
 def read_new_accs(db: Session = Depends(get_db)):

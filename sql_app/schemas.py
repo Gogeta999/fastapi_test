@@ -5,6 +5,7 @@ These Pydantic models define more or less a "schema" (a valid data shape).
 
 So this will help us avoiding confusion while using both.
 """
+from datetime import datetime
 from pydantic import BaseModel
 
 class OldMT4Account(BaseModel):
@@ -216,3 +217,93 @@ class NewSYSUser(BaseModel):
     
     class Config:
         orm_mode = True 
+
+class MT4OpenOrders(BaseModel):
+    ID : str
+    Activation : int | None
+    ClosePrice : float | None
+    CloseTime : datetime | None
+    Cmd : int | None
+    Comment : str | None
+    Commission : float | None
+    CommissionAgent : float | None
+    Digits : int | None
+    Expiration : datetime | None
+    GwClosePrice : int | None
+    GwOpenPrice : int | None
+    GwOrder : int | None
+    GwVolume : int | None
+    Login : int | None
+    Magic : int | None
+    MarginRate : float | None
+    OpenPrice : float | None
+    OpenTime : datetime | None
+    OrderNum : int | None
+    Profit : float | None
+    Reason : int | None
+    Sl : float | None
+    State : int | None
+    Storage : float | None
+    Symbol : str | None
+    Taxes : float | None
+    Timestamp : str | None
+    Tp : float | None
+    Volume : int | None
+    UserId : str | None
+    UserName : str | None
+    BelongId : str | None
+    BelongName : str | None
+    SymbolGroupId : str | None
+    SymbolGroupName : str | None
+    SalseID : str | None
+    SalseName : str | None
+    MTServer : int | None
+    Mt_group_alias : str | None
+    class Config:
+        
+        orm_mode = True
+        
+class MT5OpenOrders(BaseModel):
+    ID : str
+    Activation : int | None
+    ClosePrice : float | None
+    CloseTime : datetime | None
+    Cmd : int | None
+    Comment : str | None
+    Commission : float | None
+    CommissionAgent : float | None
+    Digits : int | None
+    Expiration : datetime | None
+    GwClosePrice : int | None
+    GwOpenPrice : int | None
+    GwOrder : int | None
+    GwVolume : int | None
+    Login : int | None
+    Magic : int | None
+    MarginRate : float | None
+    OpenPrice : float | None
+    OpenTime : datetime | None
+    OrderNum : int | None
+    Profit : float | None
+    Reason : int | None
+    Sl : float | None
+    State : int | None
+    Storage : float | None
+    Symbol : str | None
+    Taxes : float | None
+    Timestamp : str | None
+    Tp : float | None
+    Volume : int | None
+    UserId : str | None
+    UserName : str | None
+    BelongId : str | None
+    BelongName : str | None
+    SymbolGroupId : str | None
+    SymbolGroupName : str | None
+    SalseID : str | None
+    SalseName : str | None
+    MTServer : int | None
+    Mt_group_alias : str | None
+    class Config:
+        
+        orm_mode = True
