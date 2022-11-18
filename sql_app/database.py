@@ -24,8 +24,8 @@ new_engine = create_engine(
 )
 # new_local = sessionmaker(autocommit=False,  autoflush=False, bind=new_engine)
 
-BaseOld4 = declarative_base()
-BaseOld5 = declarative_base()
+# BaseOld4 = declarative_base()
+# BaseOld5 = declarative_base()
 BaseNew = declarative_base()
 
 local_session = sessionmaker()
