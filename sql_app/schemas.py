@@ -8,67 +8,67 @@ So this will help us avoiding confusion while using both.
 from datetime import datetime
 from pydantic import BaseModel
 
-class OldMT4Account(BaseModel):
-    login: int | None
-    user_id: int | None
-    login_type: str | None
-    # commit_group_id: int | None
+# class OldMT4Account(BaseModel):
+#     login: int | None
+#     user_id: int | None
+#     login_type: str | None
+#     # commit_group_id: int | None
     
-    class Config:
-        orm_mode = True 
+#     class Config:
+#         orm_mode = True 
  
-class Old4User(BaseModel):
-    id: int # user id
-    user_name: str
-    parent_id: int #User Parent ID
-    role_id: int #2 is Agent, 3 is DC
-    email: str | None
+# class Old4User(BaseModel):
+#     id: int # user id
+#     user_name: str
+#     parent_id: int #User Parent ID
+#     role_id: int #2 is Agent, 3 is DC
+#     email: str | None
 
-    class Config:
-        orm_mode = True 
+#     class Config:
+#         orm_mode = True 
 
 
-class OldMT5Account(BaseModel):
-    login: int | None
-    user_id: int | None
-    login_type: str | None
-    # commit_group_id: int | None
-    # create_time: datetime | None
-    # update_time: datetime | None
+# class OldMT5Account(BaseModel):
+#     login: int | None
+#     user_id: int | None
+#     login_type: str | None
+#     # commit_group_id: int | None
+#     # create_time: datetime | None
+#     # update_time: datetime | None
     
-    class Config:
-        orm_mode = True 
+#     class Config:
+#         orm_mode = True 
  
-class Old5User(BaseModel):
-    id: int # user id
-    user_name: str
-    parent_id: int #User Parent ID
-    role_id: int #2 is Agent, 3 is DC
-    email: str | None
+# class Old5User(BaseModel):
+#     id: int # user id
+#     user_name: str
+#     parent_id: int #User Parent ID
+#     role_id: int #2 is Agent, 3 is DC
+#     email: str | None
     
-    # user_code: str | None
-    # password: str | None
-    # role_group_id: int | None
-    # channel_id: int | None
-    # parent_id: int | None
-    # photo: str | None
-    # phone: str | None
-    # commit_level_id: str | None
-    # commit_rule_param: str | None
-    # reg_time: datetime | None
-    # u_status: int | None
-    # info_status: int | None
-    # info_review_status: int | None
-    # language: str | None
-    # invit_code: str | None
-    # totp_secret: str | None
-    # login_fail_count: int | None
-    # last_login_time: datetime | None
-    # deposit_group_id: int | None
-    # login_verify_code: str | None
+#     # user_code: str | None
+#     # password: str | None
+#     # role_group_id: int | None
+#     # channel_id: int | None
+#     # parent_id: int | None
+#     # photo: str | None
+#     # phone: str | None
+#     # commit_level_id: str | None
+#     # commit_rule_param: str | None
+#     # reg_time: datetime | None
+#     # u_status: int | None
+#     # info_status: int | None
+#     # info_review_status: int | None
+#     # language: str | None
+#     # invit_code: str | None
+#     # totp_secret: str | None
+#     # login_fail_count: int | None
+#     # last_login_time: datetime | None
+#     # deposit_group_id: int | None
+#     # login_verify_code: str | None
     
-    class Config:
-        orm_mode = True 
+#     class Config:
+#         orm_mode = True 
 
 class NewMTAccount(BaseModel):
     id: str
