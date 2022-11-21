@@ -32,12 +32,12 @@ def get_home():
     return 'Hello World'
 
 @app.get("/mt4orders")
-def get_4orders(db: Session = Depends(get_db)):
+async def get_4orders(db: Session = Depends(get_db)):
     orders = db.query(MT4OpenOrders).all()
     return orders
 
 @app.get("/mt5orders")
-def get_5orders(db: Session = Depends(get_db)):
+async def get_5orders(db: Session = Depends(get_db)):
     orders = db.query(MT5OpenOrders).all()
     return orders
 
