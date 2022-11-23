@@ -66,7 +66,8 @@ async def mt5_positions(db: Session = Depends(get_db)):
 async def mt_accs(db: Session = Depends(pure_sql)):
     sql = text("SELECT * FROM mt_accounts")
     sql_results = db.execute(sql)
-    results = json.loads(json.dump([dict(r) for r in sql_results], cls=JsonEncoder))
+    print("SQL Res", sql_results)
+    results = json.loads(json.dumps([dict(r) for r in sql_results], cls=JsonEncoder))
     return results
 
 
@@ -74,7 +75,6 @@ async def mt_accs(db: Session = Depends(pure_sql)):
 @app.get("/mt4orders")
 async def mt4_orders(db: Session= Depends(pure_sql), before_day: int = 30):
     time_delta = timedelta(days=before_day)
-    
     expect_time = (datetime.now() - time_delta).strftime("%Y-%m-%d %H:%M:%S")
     sql = text("SELECT * FROM traderecord WHERE CloseTime > :date")
     sql_results = db.execute(sql, {'date': expect_time})
@@ -112,7 +112,7 @@ async def trasfer_record(db: Session= Depends(pure_sql), before_day: int = 30):
 async def rebate_record(db: Session= Depends(pure_sql), before_day: int = 30):
     time_delta = timedelta(days=before_day)
     expect_time = (datetime.now() - time_delta).strftime("%Y-%m-%d %H:%M:%S")
-    sql = text("SELECT * FROM ta_rebate_tradecomm WHERE create_date > :date")
+    sql = text("SELECT * FROM rebate_tradecomm WHERE CloseTime > :date")
     sql_results = db.execute(sql, {'date': expect_time})
     results = json.loads(json.dumps([dict(r) for r in sql_results], cls=JsonEncoder))
     return results
