@@ -29,10 +29,11 @@ new_engine = create_engine(
 BaseNew = declarative_base()
 
 local_session = sessionmaker()
+pure_session = sessionmaker()
 local_session.configure(binds={
     # BaseOld4: crm4_engine,
     # BaseOld5: crm5_engine,
     BaseNew: new_engine
 })
     
-
+pure_session.configure(bind=new_engine)
