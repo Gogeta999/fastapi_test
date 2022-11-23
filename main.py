@@ -53,17 +53,17 @@ def get_home():
     return 'Hello World'
 
 @app.get("/mt4positions")
-async def get_4orders(db: Session = Depends(get_db)):
+async def mt4_positions(db: Session = Depends(get_db)):
     orders = db.query(MT4OpenOrders).all()
     return orders
 
 @app.get("/mt5positions")
-async def get_5orders(db: Session = Depends(get_db)):
+async def mt5_positions(db: Session = Depends(get_db)):
     orders = db.query(MT5OpenOrders).all()
     return orders
 
 @app.get("/mtacc")
-async def get_mt_accs(db: Session = Depends(pure_sql)):
+async def mt_accs(db: Session = Depends(pure_sql)):
     sql = text("SELECT * FROM mt_accounts")
     sql_results = db.execute(sql)
     results = json.loads(json.dump([dict(r) for r in sql_results], cls=JsonEncoder))
