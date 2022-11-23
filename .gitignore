@@ -3,3 +3,4 @@ env/
 .0d32bced91aa5c2ee5696fc7995370ae_venv/
 0d32bced91aa5c2ee5696fc7995370ae_venv/
 __pycache__/
+logs/
