@@ -9,8 +9,8 @@ from sqlalchemy.ext.automap import automap_base
 # With postgresql
 # OLD_CRM4_URL = "mysql+mysqlconnector://root:admin123@localhost:3306/crm4_db"
 # OLD_CRM5_URL = "mysql+mysqlconnector://root:admin123@localhost:3306/crm5_db"
-NEW_CRM_URL = "mysql+mysqlconnector://root:admin123@localhost:3306/new_crm_db_27"
-# NEW_CRM_URL = "mysql+mysqlconnector://am_rebate_2022:$RK%gB^MPzNNN^8S@rm-gs532b0d90j4zayl9.mysql.singapore.rds.aliyuncs.com:3306/sw_crm"
+# NEW_CRM_URL = "mysql+mysqlconnector://root:admin123@localhost:3306/new_crm_db_27"
+NEW_CRM_URL = "mysql+mysqlconnector://am_rebate_2022:$RK%gB^MPzNNN^8S@rm-gs532b0d90j4zayl9.mysql.singapore.rds.aliyuncs.com:3306/sw_crm"
 # With PostgreSQL
 
 # crm4_engine = create_engine(
