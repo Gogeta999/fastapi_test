@@ -103,21 +103,21 @@ async def mt5_orders(db: Session= Depends(pure_sql), before_day: int = 7):
 @app.get("/deposit")
 async def deposit_record(db: Session = Depends(pure_sql)):
     sql = text("SELECT ta.mt_account, ta.deposit_dollar, ta.fund_type, ta.belong_ib_name, ta.belong_sale_name, ta.fund_remark, ta.mt_server, ta.create_date  FROM ta_finance_records as ta WHERE ta.deposit_dollar > 0")
-    sql_results = db.exutre(sql)
+    sql_results = db.execute(sql)
     results = json.loads(json.dumps([dict(r) for r in sql_results], cls=JsonEncoder))
     return results
 
 @app.get("/withdraw")
 async def withdraw_record(db: Session = Depends(pure_sql)):
     sql = text("SELECT ta.mt_account, ta.withdraw_dollar, ta.fund_type, ta.belong_ib_name, ta.belong_sale_name, ta.fund_remark, ta.mt_server, ta.create_date  FROM ta_finance_records as ta WHERE ta.withdraw_dollar > 0")
-    sql_results = db.exutre(sql)
+    sql_results = db.execute(sql)
     results = json.loads(json.dumps([dict(r) for r in sql_results], cls=JsonEncoder))
     return results
 
 @app.get("/adjust")
 async def adjust_record(db: Session = Depends(pure_sql)):
     sql = text("SELECT ta.mt_account, ta.adjust_dollar, ta.fund_type, ta.belong_ib_name, ta.belong_sale_name, ta.fund_remark, ta.mt_server, ta.create_date  FROM ta_finance_records as ta WHERE ta.adjust_dollar > 0")
-    sql_results = db.exutre(sql)
+    sql_results = db.execute(sql)
     results = json.loads(json.dumps([dict(r) for r in sql_results], cls=JsonEncoder))
     return results
 
@@ -125,7 +125,7 @@ async def adjust_record(db: Session = Depends(pure_sql)):
 async def trasfer_record(db: Session= Depends(pure_sql), before_day: int = 7):
     time_delta = timedelta(days=before_day)
     expect_time = (datetime.now() - time_delta).strftime("%Y-%m-%d %H:%M:%S")
-    sql = text("SELECT * FROM ta_transfer_records WHERE create_date > :date")
+    sql = text("SELECT * FROM ta_transfer_records")
     sql_results = db.execute(sql)
     #sql_results = db.execute(sql, {'date': expect_time})
     results = json.loads(json.dumps([dict(r) for r in sql_results], cls=JsonEncoder))
@@ -133,6 +133,15 @@ async def trasfer_record(db: Session= Depends(pure_sql), before_day: int = 7):
 
 @app.get("/rebate_tradecomm")
 async def rebate_record(db: Session= Depends(pure_sql), before_day: int = 7):
+    time_delta = timedelta(days=before_day)
+    expect_time = (datetime.now() - time_delta).strftime("%Y-%m-%d %H:%M:%S")
+    sql = text("SELECT * FROM rebate_tradecomm WHERE CloseTime > :date")
+    sql_results = db.execute(sql, {'date': expect_time})
+    results = json.loads(json.dumps([dict(r) for r in sql_results], cls=JsonEncoder))
+    return results
+    
+@app.get("/profit")
+async def profit_record(db: Session= Depends(pure_sql), before_day: int = 7):
     time_delta = timedelta(days=before_day)
     expect_time = (datetime.now() - time_delta).strftime("%Y-%m-%d %H:%M:%S")
     sql = text("SELECT * FROM rebate_tradecomm WHERE CloseTime > :date")
