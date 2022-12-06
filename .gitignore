@@ -8,3 +8,5 @@ gunicorn.conf
 0d32bced91aa5c2ee5696fc7995370ae_venv/
 0d32bced91aa5c2ee5696fc7995370ae_venv/*
 .env
+f275f2a55ee4abdf8875dce6987e2f5f_venv/
+f275f2a55ee4abdf8875dce6987e2f5f_venv/*

@@ -3,18 +3,16 @@ from routers import rc_routes, datacenter
 from fastapi.responses import RedirectResponse
 
 
-router = APIRouter()
-router = FastAPI(title="Ash999")
-router.include_router(rc_routes.router)
-router.include_router(datacenter.router)
+app = APIRouter()
+app = FastAPI(title="Ash999")
+app.include_router(rc_routes.router)
+app.include_router(datacenter.router)
 
-app = router
 
-@router.get("/")
+@app.get("/")
 def get_home():
     redirect_url = '/docs' 
     return RedirectResponse(redirect_url)
-
 
 
 
