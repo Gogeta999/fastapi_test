@@ -35,17 +35,17 @@ class JsonEncoder(json.JSONEncoder):
   
 router = APIRouter()
 
-@router.get("/mt4positions")
+@router.get("/mt4positions", tags=["dc"])
 async def mt4_positions(db: Session = Depends(get_db)):
     orders = db.query(MT4OpenOrders).all()
     return orders
 
-@router.get("/mt5positions")
+@router.get("/mt5positions", tags=["dc"])
 async def mt5_positions(db: Session = Depends(get_db)):
     orders = db.query(MT5OpenOrders).all()
     return orders
 
-@router.get("/mtacc")
+@router.get("/mtacc", tags=["dc"])
 async def mt_accs(db: Session = Depends(pure_sql)):
     sql = text("SELECT * FROM mt_accounts")
     sql_results = db.execute(sql)
@@ -53,7 +53,7 @@ async def mt_accs(db: Session = Depends(pure_sql)):
     results = json.loads(json.dumps([dict(r) for r in sql_results], cls=JsonEncoder))
     return results
 
-@router.get("/mt4orders")
+@router.get("/mt4orders", tags=["dc"])
 async def mt4_orders(db: Session= Depends(pure_sql), before_day: int = 7):
     time_delta = timedelta(days=before_day)
     expect_time = (datetime.now() - time_delta).strftime("%Y-%m-%d %H:%M:%S")
@@ -62,7 +62,7 @@ async def mt4_orders(db: Session= Depends(pure_sql), before_day: int = 7):
     results = json.loads(json.dumps([dict(r) for r in sql_results], cls=JsonEncoder))
     return results
 
-@router.get("/mt5orders")
+@router.get("/mt5orders", tags=["dc"])
 async def mt5_orders(db: Session= Depends(pure_sql), before_day: int = 7):
     time_delta = timedelta(days=before_day)
     expect_time = (datetime.now() - time_delta).strftime("%Y-%m-%d %H:%M:%S")
@@ -71,28 +71,28 @@ async def mt5_orders(db: Session= Depends(pure_sql), before_day: int = 7):
     results = json.loads(json.dumps([dict(r) for r in sql_results], cls=JsonEncoder))
     return results
 
-@router.get("/deposit")
+@router.get("/deposit", tags=["dc"])
 async def deposit_record(db: Session = Depends(pure_sql)):
     sql = text("SELECT ta.mt_account, ta.deposit_dollar, ta.fund_type, ta.belong_ib_name, ta.belong_sale_name, ta.fund_remark, ta.mt_server, ta.create_date  FROM ta_finance_records as ta WHERE ta.deposit_dollar > 0")
     sql_results = db.execute(sql)
     results = json.loads(json.dumps([dict(r) for r in sql_results], cls=JsonEncoder))
     return results
 
-@router.get("/withdraw")
+@router.get("/withdraw", tags=["dc"])
 async def withdraw_record(db: Session = Depends(pure_sql)):
     sql = text("SELECT ta.mt_account, ta.withdraw_dollar, ta.fund_type, ta.belong_ib_name, ta.belong_sale_name, ta.fund_remark, ta.mt_server, ta.create_date  FROM ta_finance_records as ta WHERE ta.withdraw_dollar > 0")
     sql_results = db.execute(sql)
     results = json.loads(json.dumps([dict(r) for r in sql_results], cls=JsonEncoder))
     return results
 
-@router.get("/adjust")
+@router.get("/adjust", tags=["dc"])
 async def adjust_record(db: Session = Depends(pure_sql)):
     sql = text("SELECT ta.mt_account, ta.adjust_dollar, ta.fund_type, ta.belong_ib_name, ta.belong_sale_name, ta.fund_remark, ta.mt_server, ta.create_date  FROM ta_finance_records as ta WHERE ta.adjust_dollar > 0")
     sql_results = db.execute(sql)
     results = json.loads(json.dumps([dict(r) for r in sql_results], cls=JsonEncoder))
     return results
 
-@router.get("/transfer_records")
+@router.get("/transfer_records", tags=["dc"])
 async def trasfer_record(db: Session= Depends(pure_sql), before_day: int = 7):
     time_delta = timedelta(days=before_day)
     expect_time = (datetime.now() - time_delta).strftime("%Y-%m-%d %H:%M:%S")
@@ -102,7 +102,7 @@ async def trasfer_record(db: Session= Depends(pure_sql), before_day: int = 7):
     results = json.loads(json.dumps([dict(r) for r in sql_results], cls=JsonEncoder))
     return results
 
-@router.get("/rebate_tradecomm")
+@router.get("/rebate_tradecomm", tags=["dc"])
 async def rebate_record(db: Session= Depends(pure_sql), before_day: int = 7):
     time_delta = timedelta(days=before_day)
     expect_time = (datetime.now() - time_delta).strftime("%Y-%m-%d %H:%M:%S")
@@ -111,7 +111,7 @@ async def rebate_record(db: Session= Depends(pure_sql), before_day: int = 7):
     results = json.loads(json.dumps([dict(r) for r in sql_results], cls=JsonEncoder))
     return results
     
-@router.get("/profit")
+@router.get("/profit", tags=["dc"])
 async def profit_record(db: Session= Depends(pure_sql), before_day: int = 7):
     time_delta = timedelta(days=before_day)
     expect_time = (datetime.now() - time_delta).strftime("%Y-%m-%d %H:%M:%S")
