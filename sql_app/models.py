@@ -1,7 +1,7 @@
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Text, DateTime, Float
 from sqlalchemy.orm import relationship
 
-from .database import  BaseNew
+from database import  BaseNew
 # , BaseOld4, BaseOld5
 
 # class OldMT4Account(BaseOld4):

@@ -8,6 +8,8 @@ router = FastAPI(title="Ash999")
 router.include_router(rc_routes.router)
 router.include_router(datacenter.router)
 
+app = router
+
 @router.get("/")
 def get_home():
     redirect_url = '/docs' 

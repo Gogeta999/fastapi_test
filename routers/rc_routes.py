@@ -1,6 +1,6 @@
 from fastapi import Depends, APIRouter
 from datetime import datetime, timedelta
-from sql_app.database import pure_session
+from database import pure_session
 import json
 from datetime import datetime, timedelta
 from decimal import *
