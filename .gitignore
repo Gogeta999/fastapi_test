@@ -7,3 +7,4 @@ logs/
 gunicorn.conf
 0d32bced91aa5c2ee5696fc7995370ae_venv/
 0d32bced91aa5c2ee5696fc7995370ae_venv/*
+.env
