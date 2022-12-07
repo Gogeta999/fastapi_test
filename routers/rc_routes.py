@@ -39,21 +39,14 @@ async def mt_total_comm(db: Session= Depends(pure_sql), mtacc: str = '0',mtserve
 
 @router.get("/mt4_total_summary", tags=["risk_control"])
 async def mt4_total_summary(db: Session= Depends(pure_sql)):
-    sql = text("SELECT tf.mt_account as acc, mc.mt_group, SUM(tf.deposit_dollar) as TotalDeposit,tr.Total_Profit, ta_tf.Total_Transfer_Deposit  FROM ta_finance_records as tf JOIN (SELECT Login,(SUM(Profit ) + SUM(`Storage` ) + SUM(Commission )) AS Total_Profit FROM traderecord GROUP BY Login) as tr ON tr.Login=tf.mt_account JOIN mt_accounts as mc ON mc.mt_account=tf.mt_account JOIN (SELECT to_account, SUM(amount) AS Total_Transfer_Deposit, to_mt_server FROM ta_transfer_records WHERE to_mt_server LIKE '%41%' GROUP BY to_account, to_mt_server) AS ta_tf ON ta_tf.to_account = tf.mt_account WHERE tf.fund_type LIKE '%d_DWDeposit%' and tf.order_number LIKE '%MTDS%' AND tf.mt_server LIKE '%41%' AND mc.mt_server LIKE '%41%' GROUP BY tf.mt_account,mc.mt_group, ta_tf.to_mt_server;")
+    sql = text("SELECT mt.mt_account, mt.mt_group, mtds.Total_Deposit, tfds.Total_TFDS, t.Real_Total_Profit FROM mt_accounts AS mt LEFT JOIN (SELECT Login, (SUM(Profit) + SUM(`Storage`) + SUM(Commission)) AS Real_Total_Profit FROM traderecord GROUP BY Login) AS t ON t.Login = mt.mt_account LEFT JOIN (SELECT mt_account, SUM(deposit_dollar) AS Total_Deposit FROM ta_finance_records WHERE mt_server LIKE '%41%' GROUP BY mt_account) AS mtds ON mtds.mt_account = mt.mt_account LEFT JOIN (SELECT to_account, SUM(amount) AS Total_TFDS FROM ta_transfer_records WHERE to_mt_server LIKE '%41%' GROUP BY to_account) AS tfds on tfds.to_account = mt.mt_account WHERE mt.mt_group NOT LIKE 'T_%' AND mt.mt_server LIKE '%41%';")
     sql_results = db.execute(sql)
     results = json.loads(json.dumps([dict(r) for r in sql_results], cls=JsonEncoder))
     return results
 
 @router.get("/mt5_total_summary", tags=["risk_control"])
 async def mt5_total_summary(db: Session= Depends(pure_sql)):
-    sql = text("SELECT tf.mt_account as acc, mc.mt_group, SUM(tf.deposit_dollar) as TotalDeposit,tr.Total_Profit, ta_tf.Total_Transfer_Deposit  FROM ta_finance_records as tf JOIN (SELECT Login,(SUM(Profit ) + SUM(`Storage` ) + SUM(Commission )) AS Total_Profit FROM traderecord_mt5 GROUP BY Login) as tr ON tr.Login=tf.mt_account JOIN mt_accounts as mc ON mc.mt_account=tf.mt_account JOIN (SELECT to_account, SUM(amount) AS Total_Transfer_Deposit, to_mt_server FROM ta_transfer_records WHERE to_mt_server LIKE '%51%' GROUP BY to_account, to_mt_server) AS ta_tf ON ta_tf.to_account = tf.mt_account WHERE tf.fund_type LIKE '%d_DWDeposit%' and tf.order_number LIKE '%MTDS%' AND tf.mt_server LIKE '%51%' AND mc.mt_server LIKE '%51%' GROUP BY tf.mt_account,mc.mt_group, ta_tf.to_mt_server;")
-    sql_results = db.execute(sql)
-    results = json.loads(json.dumps([dict(r) for r in sql_results], cls=JsonEncoder))
-    return results
-
-@router.get("/test_summary", tags=["risk_control"])
-async def test_summary(db: Session= Depends(pure_sql)):
-    sql = text("SELECT t.Login,  mt.mt_group, (SUM(t.Profit) + SUM(t.`Storage`) + SUM(t.Commission)) AS Real_Total_Profit, SUM(mtds.deposit_dollar) AS Total_MTDS FROM traderecord AS t LEFT JOIN mt_accounts AS mt ON t.Login = mt.mt_account LEFT JOIN ta_finance_records AS mtds ON t.Login = mtds.mt_account GROUP BY t.Login, mt.mt_group;")
+    sql = text("SELECT mt.mt_account, mt.mt_group, mtds.Total_Deposit, tfds.Total_TFDS, t.Real_Total_Profit FROM mt_accounts AS mt LEFT JOIN (SELECT Login, (SUM(Profit) + SUM(`Storage`) + SUM(Commission)) AS Real_Total_Profit FROM traderecord_mt5 GROUP BY Login) AS t ON t.Login = mt.mt_account LEFT JOIN (SELECT mt_account, SUM(deposit_dollar) AS Total_Deposit FROM ta_finance_records WHERE mt_server LIKE '%51%' GROUP BY mt_account) AS mtds ON mtds.mt_account = mt.mt_account LEFT JOIN (SELECT to_account, SUM(amount) AS Total_TFDS FROM ta_transfer_records WHERE to_mt_server LIKE '%51%' GROUP BY to_account) AS tfds ON tfds.to_account = mt.mt_account WHERE mt.mt_group NOT LIKE 'real\T_%' AND mt.mt_group NOT LIKE 'demo%' AND mt.mt_server LIKE '%51%';")
     sql_results = db.execute(sql)
     results = json.loads(json.dumps([dict(r) for r in sql_results], cls=JsonEncoder))
     return results
